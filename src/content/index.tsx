@@ -71,12 +71,36 @@ function extractData() {
     const content = contentElement?.textContent?.trim() || '';
     
     // Get amount
-    const amountElement = columns[3].querySelector('span.offset');
-    let amount = amountElement?.textContent?.trim().replace(/[^0-9-]/g, '') || '0';
+    const amountElement = columns[3];
+    let amount;
+
+        // Check if it's a form-switch-td (editable financial institution)
+    if (amountElement?.classList.contains('form-switch-td')) {
+      // Get the name from the span inside the noform div
+      const spanElement = amountElement.querySelector('.noform span');
+      amount = spanElement?.textContent?.trim().replace(/[^0-9-]/g, '') || '0';
+    } else {
+      // Simple td case - get text content directly
+      const spanElement = amountElement.querySelector('span.offset')
+      amount = spanElement?.textContent?.trim().replace(/[^0-9-]/g, '') || '0';
+    }
+
+
     
     // Get financial institution
     const accountElement = columns[4];
-    const account = accountElement?.textContent?.trim() || '';
+    let account = '';
+    
+    // Check if it's a form-switch-td (editable financial institution)
+    if (accountElement?.classList.contains('form-switch-td')) {
+      // Get the name from the span inside the noform div
+      const spanElement = accountElement.querySelector('.noform span');
+      account = spanElement?.textContent?.trim() || '';
+    } else {
+      // Simple td case - get text content directly
+      account = accountElement?.textContent?.trim() || '';
+    }
+    
     
     // Get main category
     const categoryElement = columns[5].querySelector('a');
@@ -85,7 +109,8 @@ function extractData() {
     // Get sub-category
     const subcategoryElement = columns[6].querySelector('a');
     const subcategory = subcategoryElement?.textContent?.trim() || '';
-    
+
+   
     // Get memo
     const memoElement = columns[7].querySelector('span');
     const memo = memoElement?.textContent?.trim() || '';
