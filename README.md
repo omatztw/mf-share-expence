@@ -23,7 +23,7 @@
 
 ## 使い方
 
-1. MoneyForwardの家計簿ページ（https://moneyforward.com/cf）を開きます
+1. [MoneyForwardの家計簿ページ](https://moneyforward.com/cf)を開きます
 2. 拡張機能が自動的に取引データを抽出し、計算を行います
 3. 計算結果がページの右上に表示されます
 4. Chrome拡張機能のアイコンをクリックすると、詳細な結果と設定画面が表示されます
