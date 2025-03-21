@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "家計分担 for MoneyForward",
+  "description": "MoneyForwardの家計簿ページを開いたら自動的に経費計算を行い、パートナーとの支払い負担を分配する拡張機能",
+  "version": "1.0.0",
+  "background": {
+    "service_worker": "src/background/index.ts"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+ "action": {
+    "default_popup": "src/popup/index.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "js": ["src/content/index.tsx"],
+      "matches": ["https://moneyforward.com/cf*"]
+    }
+  ]
+}
