@@ -6,7 +6,9 @@ export const DEFAULT_SETTINGS: Settings = {
   expenceList: [],
   expenceSubList: [],
   rate: 0.5,
-  partnerName: 'パートナー'
+  partnerName: 'パートナー',
+  gasApiUrl: '',
+  gasApiToken: ''
 };
 
 // Load settings from Chrome storage
@@ -17,14 +19,18 @@ export const loadSettings = async (): Promise<Settings> => {
       'expenceList',
       'expenceSubList',
       'rate',
-      'partnerName'
+      'partnerName',
+      'gasApiUrl',
+      'gasApiToken'
     ], (result) => {
       const settings: Settings = {
         partnerAccount: result.partnerAccount || DEFAULT_SETTINGS.partnerAccount,
         expenceList: result.expenceList || DEFAULT_SETTINGS.expenceList,
         expenceSubList: result.expenceSubList || DEFAULT_SETTINGS.expenceSubList,
         rate: result.rate !== undefined ? result.rate : DEFAULT_SETTINGS.rate,
-        partnerName: result.partnerName || DEFAULT_SETTINGS.partnerName
+        partnerName: result.partnerName || DEFAULT_SETTINGS.partnerName,
+        gasApiUrl: result.gasApiUrl || DEFAULT_SETTINGS.gasApiUrl,
+        gasApiToken: result.gasApiToken || DEFAULT_SETTINGS.gasApiToken
       };
       resolve(settings);
     });

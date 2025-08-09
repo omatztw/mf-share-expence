@@ -7,6 +7,8 @@ export interface Settings {
   expenceSubList: string[];
   rate: number;
   partnerName: string;
+  gasApiUrl?: string;
+  gasApiToken?: string;
 }
 
 // Transaction data type

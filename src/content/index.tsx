@@ -1,6 +1,7 @@
 import { CalculationResults, MessageAction, MessageResponse, Transaction } from '../types';
 import { loadSettings } from '../utils/storage';
 import { calculateExpenses } from '../utils/calculations';
+import { sendToSpreadsheet, extractMonthFromPage } from '../utils/spreadsheet';
 
 // Ensure Chrome types are available
 declare const chrome: any;
@@ -196,6 +197,27 @@ async function injectResultPanel() {
         <div style="font-weight: bold;">${results.lack.toLocaleString()} 円</div>
       </div>
     </div>
+    <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #ddd;">
+      <button id="mf-save-to-spreadsheet" style="
+        width: 100%;
+        padding: 8px 16px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+      ">
+        スプレッドシートに保存
+      </button>
+      <div id="mf-spreadsheet-status" style="
+        margin-top: 8px;
+        font-size: 12px;
+        text-align: center;
+        display: none;
+      "></div>
+    </div>
   `;
   
   // Add to page
@@ -206,6 +228,55 @@ async function injectResultPanel() {
   if (closeButton) {
     closeButton.addEventListener('click', () => {
       panel.remove();
+    });
+  }
+  
+  // Add spreadsheet save button event listener
+  const saveButton = document.getElementById('mf-save-to-spreadsheet');
+  const statusDiv = document.getElementById('mf-spreadsheet-status');
+  
+  if (saveButton && statusDiv) {
+    saveButton.addEventListener('click', async () => {
+      // Disable button during processing
+      saveButton.setAttribute('disabled', 'true');
+      saveButton.style.opacity = '0.6';
+      saveButton.textContent = '保存中...';
+      
+      // Get the month from the page
+      const month = extractMonthFromPage();
+      
+      if (!month) {
+        statusDiv.style.display = 'block';
+        statusDiv.style.color = 'red';
+        statusDiv.textContent = '月情報を取得できませんでした';
+        
+        // Re-enable button
+        saveButton.removeAttribute('disabled');
+        saveButton.style.opacity = '1';
+        saveButton.textContent = 'スプレッドシートに保存';
+        return;
+      }
+      
+      // Send to spreadsheet (reverse sign: positive lack means partner owes money, so record as negative in spreadsheet)
+      const result = await sendToSpreadsheet(month, -results.lack, settings);
+      
+      // Show status
+      statusDiv.style.display = 'block';
+      statusDiv.style.color = result.success ? 'green' : 'red';
+      statusDiv.textContent = result.message;
+      
+      // Re-enable button
+      saveButton.removeAttribute('disabled');
+      saveButton.style.opacity = '1';
+      saveButton.textContent = result.success ? '保存完了！' : 'スプレッドシートに保存';
+      
+      // Reset button text after 3 seconds if successful
+      if (result.success) {
+        setTimeout(() => {
+          saveButton.textContent = 'スプレッドシートに保存';
+          statusDiv.style.display = 'none';
+        }, 3000);
+      }
     });
   }
 }
