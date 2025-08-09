@@ -223,8 +223,8 @@ async function injectResultPanel() {
   // Add to page
   document.body.appendChild(panel);
   
-  // Add close button event listener
-  const closeButton = document.getElementById('mf-close-panel');
+  // Add close button event listener - query directly from panel
+  const closeButton = panel.querySelector('#mf-close-panel') as HTMLButtonElement;
   if (closeButton) {
     closeButton.addEventListener('click', () => {
       panel.remove();
@@ -232,8 +232,8 @@ async function injectResultPanel() {
   }
   
   // Add spreadsheet save button event listener
-  const saveButton = document.getElementById('mf-save-to-spreadsheet');
-  const statusDiv = document.getElementById('mf-spreadsheet-status');
+  const saveButton = panel.querySelector('#mf-save-to-spreadsheet') as HTMLButtonElement;
+  const statusDiv = panel.querySelector('#mf-spreadsheet-status') as HTMLDivElement;
   
   if (saveButton && statusDiv) {
     saveButton.addEventListener('click', async () => {
